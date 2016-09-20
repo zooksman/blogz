@@ -3,6 +3,7 @@
 {% block content %}
 
 <h2 class="post-title">{{ post.title }}</h2>
+<h3>Created by: <a href="/blog/{{ username }}">{{ username }}</a></h3>
 <p class="post-body">{{ post.body }}</p>
 <!-- TODO add author w/ link to author's blog -->
 <p class="post-author">

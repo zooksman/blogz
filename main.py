@@ -21,8 +21,10 @@ class BlogHandler(webapp2.RequestHandler):
         """
 
         # TODO - filter the query so that only posts by the given user
-        return None
-
+        query = Post.all().order('-created')
+        query = query.filter("author =", user.key())
+        return query.fetch(limit=limit, offset=offset)
+                
     def get_user_by_name(self, username):
         """ Get a user object from the db, based on their username """
         user = db.GqlQuery("SELECT * FROM User WHERE username = '%s'" % username)
@@ -153,9 +155,10 @@ class ViewPostHandler(BlogHandler):
         """ Render a page with post determined by the id (via the URL/permalink) """
 
         post = Post.get_by_id(int(id))
+        user = User.get_by_id(post.author.key().id())
         if post:
             t = jinja_env.get_template("post.html")
-            response = t.render(post=post)
+            response = t.render(post=post, username=user.username)
         else:
             error = "there is no post with id %s" % id
             t = jinja_env.get_template("404.html")
